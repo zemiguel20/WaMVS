@@ -16,7 +16,7 @@ The player has **one hammer in each hand**, with each hand being controlled by t
 
 **Moles** emit a **spatial sound** and **spatial vibration** when **activated**. **Spatial vibration** works similar to spatial audio, by **changing** the vibration **intensity** in **both controllers**.
 
-**Sound** and **visual feedback** when mole **hit successfully**. **Sound feedback** when hit **failed target**. *NOTE:* vibration not used as feedback as it needs to be Morse code which is not efficient for fast gameplay.
+**Sound** and **visual feedback** when mole **hit successfully**. *NOTE:* vibration not used as feedback as it needs to be Morse code which is not efficient for fast gameplay.
 
 A menu with a **start button**, **options button** and **quit button** appears at the start of the game and at the end of the run.
 
@@ -28,6 +28,7 @@ There is a **display** for the **time**, current **score**, and **highscore**.
 - volume changer in options
 - pause button/menu
 - interaction with UI (button press? pointer?)
+- sound effect when hit ground or other object?
 
 ### Design Parameters
 
@@ -45,4 +46,19 @@ There is a **display** for the **time**, current **score**, and **highscore**.
 
 ## Technical Design
 
-WIP
+### VR Setup
+The player VR rig is setup using the Unity framework template.
+
+The hammers are the "hand" models. They are modular, have a collider and a script that interacts with a `Hittable` interface.
+
+### Mole
+The Hole object has a Mole object as a child, that is "hidden" inside it.
+The Hole script provides the function `Activate(seconds)` that makes the Mole appear for some given time.
+The Mole has a collider and a `Hittable` interface, for the Hammer to interact with. <br>
+There is a flag that is set to prevent the player hitting more than one time in one activation.
+
+### Game System
+
+This system controls the game flow. It hooks with the input events and UI for things like game start.
+
+It has a `Timer` and keeps track of the current player score and highscore. 

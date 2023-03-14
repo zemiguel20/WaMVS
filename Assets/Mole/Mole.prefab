@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 268910968384183326}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6692257839273531068}
@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97b4be3d142440c4e8eb601faa77862f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moleModel: {fileID: 7087560973644923397}
   moleHit:
     m_PersistentCalls:
       m_Calls: []

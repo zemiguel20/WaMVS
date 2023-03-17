@@ -16,11 +16,13 @@ public class Mole : MonoBehaviour
 
     private Transform moleModel;
     private Collider moleCollider;
+    private AudioSource appearSFX;
 
     private void Awake()
     {
         moleModel = transform.Find("MoleModel");
         moleCollider = GetComponent<Collider>();
+        appearSFX = transform.Find("AppearFX").GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -47,6 +49,7 @@ public class Mole : MonoBehaviour
     {
         active = true;
         moleCollider.enabled = true;
+        appearSFX.Play();
         yield return TweenPosition(new Vector3(0, 0.5f, 0), ANIMATION_SPEED);
         yield return new WaitForSeconds(time);
         Hide();

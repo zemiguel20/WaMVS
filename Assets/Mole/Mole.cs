@@ -17,12 +17,14 @@ public class Mole : MonoBehaviour
     private Transform moleModel;
     private Collider moleCollider;
     private AudioSource appearSFX;
+    private AudioSource hitSFX;
 
     private void Awake()
     {
         moleModel = transform.Find("MoleModel");
         moleCollider = GetComponent<Collider>();
         appearSFX = transform.Find("AppearFX").GetComponent<AudioSource>();
+        hitSFX = transform.Find("HitFX").GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,8 +34,8 @@ public class Mole : MonoBehaviour
 
     private void OnMoleHit()
     {
+        hitSFX.Play();
         Hide();
-
         moleHit.Invoke();
     }
 

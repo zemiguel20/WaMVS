@@ -17,6 +17,7 @@ public class Mole : MonoBehaviour
     private Transform moleModel;
     private Collider moleCollider;
     private AudioSource appearSFX;
+    private VibrationSource appearVib;
     private AudioSource hitSFX;
 
     private void Awake()
@@ -24,6 +25,7 @@ public class Mole : MonoBehaviour
         moleModel = transform.Find("MoleModel");
         moleCollider = GetComponent<Collider>();
         appearSFX = transform.Find("AppearFX").GetComponent<AudioSource>();
+        appearVib = transform.Find("AppearFX").GetComponent <VibrationSource>();
         hitSFX = transform.Find("HitFX").GetComponent<AudioSource>();
     }
 
@@ -52,6 +54,7 @@ public class Mole : MonoBehaviour
         active = true;
         moleCollider.enabled = true;
         appearSFX.Play();
+        appearVib.Play();
         yield return TweenPosition(new Vector3(0, 0.5f, 0), ANIMATION_SPEED);
         yield return new WaitForSeconds(time);
         Hide();

@@ -1522,10 +1522,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runDuration: 20
-  startMoleSpawnCD: 2
-  endMoleSpawnCD: 0.5
-  startMoleActiveDuration: 1.5
-  endMoleActiveDuration: 0.5
+  moleDuration: 0
+  moleSpawnCooldown: 0.5
   moles:
   - {fileID: 1103460267}
   - {fileID: 261407016}

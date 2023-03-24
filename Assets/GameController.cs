@@ -8,10 +8,8 @@ using System.Linq;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private int runDuration;
-    [SerializeField] private float startMoleSpawnCD;
-    [SerializeField] private float endMoleSpawnCD;
-    [SerializeField] private float startMoleActiveDuration;
-    [SerializeField] private float endMoleActiveDuration;
+    [SerializeField] private float moleDuration;
+    [SerializeField] private float moleSpawnCooldown;
     [SerializeField] private List<Mole> moles;
 
     public int score { get; private set; }
@@ -23,6 +21,15 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // T FOR TEST ACTIVATION
+        if(time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            foreach (Mole mole in moles)
+            {
+                mole.Show(3.0f);
+            }
+        }
+
         // Run start/restart
         if (time <= 0.0f && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
@@ -30,9 +37,6 @@ public class GameController : MonoBehaviour
             score = 0;
             // Reset timer
             time = runDuration;
-            // Reset Spawner
-            currentMoleSpawnCD = startMoleSpawnCD;
-            currentMoleActiveDuration = startMoleActiveDuration;
             // Reset moles
             foreach (Mole mole in moles)
             {
@@ -46,10 +50,6 @@ public class GameController : MonoBehaviour
         {
             // Decrease timer
             time -= Time.deltaTime;
-            // Ramp up spawner
-            float factor = 1 - (time / runDuration);
-            currentMoleSpawnCD = Mathf.Lerp(startMoleSpawnCD, endMoleSpawnCD, factor);
-            currentMoleActiveDuration = Mathf.Lerp(startMoleActiveDuration, endMoleActiveDuration, factor);
         }
     }
 
@@ -66,11 +66,11 @@ public class GameController : MonoBehaviour
                 int moleIndex = Random.Range(0, inactiveMoles.Count());
                 // Activate mole
                 Debug.Log("Spawning Mole");
-                inactiveMoles.ElementAt(moleIndex).Show(currentMoleActiveDuration);
+                inactiveMoles.ElementAt(moleIndex).Show(moleDuration);
             }
 
             // Cooldown
-            yield return new WaitForSeconds(currentMoleSpawnCD);
+            yield return new WaitForSeconds(moleSpawnCooldown);
         }
         Debug.Log("Finished Spawner");
 
@@ -84,6 +84,5 @@ public class GameController : MonoBehaviour
     public void OnMoleHit()
     {
         score += 100;
-        Debug.Log(score);
     }
 }

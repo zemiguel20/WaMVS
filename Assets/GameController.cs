@@ -1,28 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
-using System.Linq;
+using UnityEngine.InputSystem.XR;
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private int runDuration;
-    [SerializeField] private float moleDuration;
+    [SerializeField] private float moleAnimationDuration;
+    [SerializeField] private float moleStayDuration;
     [SerializeField] private float moleSpawnCooldown;
+    [SerializeField] private bool soundActive;
+    [SerializeField] private bool vibrationActive;
     [SerializeField] private List<Mole> moles;
+
+    public InputAction startGame;
 
     public int score { get; private set; }
     public float time { get; private set; } // Run timer
 
-    private float currentMoleSpawnCD;
-    private float currentMoleActiveDuration;
+    private void Start()
+    {
+        startGame.Enable();
+    }
 
     // Update is called once per frame
     void Update()
     {
         // T FOR TEST ACTIVATION
-        if(time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)
+        if (time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)
         {
             foreach (Mole mole in moles)
             {
@@ -31,7 +38,8 @@ public class GameController : MonoBehaviour
         }
 
         // Run start/restart
-        if (time <= 0.0f && Keyboard.current.spaceKey.wasPressedThisFrame)
+        
+        if (time <= 0.0f && startGame.WasPerformedThisFrame())
         {
             // Reset score
             score = 0;
@@ -42,6 +50,11 @@ public class GameController : MonoBehaviour
             {
                 mole.Hide();
             }
+            // Set mole animation speed
+            Mole.s_animationSpeed = 1.0f / moleAnimationDuration;
+            // Set Sound and Vibration flags
+            Mole.s_soundActive = soundActive;
+            Mole.s_vibrationActive = vibrationActive;
             // Start spawner
             StartCoroutine(MoleSpawner());
         }
@@ -65,8 +78,7 @@ public class GameController : MonoBehaviour
                 // Choose random inactive mole
                 int moleIndex = Random.Range(0, inactiveMoles.Count());
                 // Activate mole
-                Debug.Log("Spawning Mole");
-                inactiveMoles.ElementAt(moleIndex).Show(moleDuration);
+                inactiveMoles.ElementAt(moleIndex).Show(moleStayDuration);
             }
 
             // Cooldown

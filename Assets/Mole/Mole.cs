@@ -1,14 +1,12 @@
-using Mono.Cecil.Cil;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 public class Mole : MonoBehaviour
 {
-    const float ANIMATION_SPEED = 2.0f;
+    public static float s_animationSpeed = 2.0f;
+    public static bool s_soundActive = false;
+    public static bool s_vibrationActive = false;
 
     public UnityEvent moleHit;
 
@@ -25,7 +23,7 @@ public class Mole : MonoBehaviour
         moleModel = transform.Find("MoleModel");
         moleCollider = GetComponent<Collider>();
         appearSFX = transform.Find("AppearFX").GetComponent<AudioSource>();
-        appearVib = transform.Find("AppearFX").GetComponent <VibrationSource>();
+        appearVib = transform.Find("AppearFX").GetComponent<VibrationSource>();
         hitSFX = transform.Find("HitFX").GetComponent<AudioSource>();
     }
 
@@ -44,7 +42,6 @@ public class Mole : MonoBehaviour
     // Activate mole for X time (in seconds)
     public void Show(float time)
     {
-        Debug.Log(name + " showing");
         StopAllCoroutines();
         StartCoroutine(ShowSequence(time));
     }
@@ -53,16 +50,21 @@ public class Mole : MonoBehaviour
     {
         active = true;
         moleCollider.enabled = true;
-        appearSFX.Play();
-        appearVib.Play();
-        yield return TweenPosition(new Vector3(0, 0.5f, 0), ANIMATION_SPEED);
+        if(s_soundActive)
+        {
+            appearSFX.Play();
+        }
+        if(s_vibrationActive)
+        {
+            appearVib.Play();
+        }
+        yield return TweenPosition(new Vector3(0, 0.5f, 0));
         yield return new WaitForSeconds(time);
         Hide();
     }
 
     public void Hide()
     {
-        Debug.Log(name + " hiding");
         StopAllCoroutines();
         StartCoroutine(HideSequence());
     }
@@ -72,7 +74,7 @@ public class Mole : MonoBehaviour
         // Disable trigger so player cant hit twice
         moleCollider.enabled = false;
         // Play hide animation
-        yield return TweenPosition(Vector3.zero, ANIMATION_SPEED);
+        yield return TweenPosition(Vector3.zero);
         // Set inactive once animation finished
         active = false;
     }
@@ -80,18 +82,18 @@ public class Mole : MonoBehaviour
     // Tween to target position
     // Tweening animation advances X% per second until 100%
     // Animation speed %/sec
-    private IEnumerator TweenPosition(Vector3 targetPosition, float animSpeed)
+    private IEnumerator TweenPosition(Vector3 targetPosition)
     {
         Vector3 startingPosition = moleModel.localPosition;
         float animProgress = 0.0f;
         while (animProgress < 1.0f)
         {
-            animProgress += animSpeed * Time.deltaTime;
-            moleModel.localPosition = Vector3.Lerp(moleModel.localPosition, targetPosition, animProgress);
+            animProgress += s_animationSpeed * Time.deltaTime;
+            moleModel.localPosition = Vector3.Lerp(startingPosition, targetPosition, animProgress);
             yield return null;
         }
     }
-    
 
-    
+
+
 }

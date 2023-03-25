@@ -544,18 +544,6 @@ Transform:
   m_Father: {fileID: 1964467214}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &680374460 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4996108388663608245, guid: aae98980ce20d4d44b588b2000ae30cc,
-    type: 3}
-  m_PrefabInstance: {fileID: 1778451605}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97b4be3d142440c4e8eb601faa77862f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -885,18 +873,6 @@ Transform:
   m_Father: {fileID: 1525827862}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1255080418 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4996108387090854611, guid: aae98980ce20d4d44b588b2000ae30cc,
-    type: 3}
-  m_PrefabInstance: {fileID: 1778451605}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97b4be3d142440c4e8eb601faa77862f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1267955164 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4996108388427560554, guid: aae98980ce20d4d44b588b2000ae30cc,
@@ -1217,18 +1193,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   vibrationDuration: 0.1
---- !u!114 &1522998518 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4996108387359813631, guid: aae98980ce20d4d44b588b2000ae30cc,
-    type: 3}
-  m_PrefabInstance: {fileID: 1778451605}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97b4be3d142440c4e8eb601faa77862f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1525827861
 GameObject:
   m_ObjectHideFlags: 0
@@ -1521,19 +1485,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2008785a942cfbe4eb72194b6f7b4a3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runDuration: 20
-  moleDuration: 0
-  moleSpawnCooldown: 0.5
+  runDuration: 10
+  moleAnimationDuration: 0.15
+  moleStayDuration: 0.4
+  moleSpawnCooldown: 0.8
+  soundActive: 0
+  vibrationActive: 0
   moles:
   - {fileID: 1103460267}
   - {fileID: 261407016}
   - {fileID: 1292329257}
   - {fileID: 1011973758}
-  - {fileID: 1255080418}
-  - {fileID: 680374460}
   - {fileID: 1267955164}
   - {fileID: 520870542}
-  - {fileID: 1522998518}
+  startGame:
+    m_Name: Start Game
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 7b9e219e-083f-498d-976e-5a15a21550f3
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 304e0ffe-ae7f-4746-b74a-f6dd70267478
+      m_Path: <ViveController>/triggerPressed
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Start Game
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 42fd30de-3eb9-45ab-94b7-48dafac143f3
+      m_Path: <Keyboard>/space
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Start Game
+      m_Flags: 0
+    m_Flags: 0
 --- !u!4 &1730846999
 Transform:
   m_ObjectHideFlags: 0

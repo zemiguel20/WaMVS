@@ -20,6 +20,8 @@ public class Mole : MonoBehaviour
     private VibrationSource appearVib;
     private AudioSource hitSFX;
 
+    [HideInInspector]public int mode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
+
     private void Awake()
     {
         moleModel = transform.Find("MoleModel");
@@ -36,7 +38,9 @@ public class Mole : MonoBehaviour
 
     private void OnMoleHit()
     {
-        hitSFX.Play();
+        if (mode == 3 || mode == 1)
+            hitSFX.Play();
+
         Hide();
         moleHit.Invoke();
     }
@@ -53,8 +57,15 @@ public class Mole : MonoBehaviour
     {
         active = true;
         moleCollider.enabled = true;
-        appearSFX.Play();
-        appearVib.Play();
+
+        if (mode == 3 || mode == 1)
+        {
+            appearSFX.panStereo = transform.position.x / 0.45f;
+            appearSFX.Play();
+        }
+
+        if (mode == 3 || mode == 2)
+            appearVib.Play();
         yield return TweenPosition(new Vector3(0, 0.5f, 0), ANIMATION_SPEED);
         yield return new WaitForSeconds(time);
         Hide();

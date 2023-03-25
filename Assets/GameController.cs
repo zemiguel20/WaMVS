@@ -7,6 +7,8 @@ using System.Linq;
 
 public class GameController : MonoBehaviour
 {
+    [Range(0, 3)]
+    [SerializeField] private int experimentMode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
     [SerializeField] private int runDuration;
     [SerializeField] private float moleDuration;
     [SerializeField] private float moleSpawnCooldown;
@@ -18,8 +20,16 @@ public class GameController : MonoBehaviour
     private float currentMoleSpawnCD;
     private float currentMoleActiveDuration;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
+    {
+        foreach (Mole mole in moles)
+        {
+            mole.mode = experimentMode;
+        }
+    }
+
+        // Update is called once per frame
+        void Update()
     {
         // T FOR TEST ACTIVATION
         if(time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)

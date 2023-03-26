@@ -20,14 +20,6 @@ public class GameController : MonoBehaviour
     private float currentMoleSpawnCD;
     private float currentMoleActiveDuration;
 
-    private void Start()
-    {
-        foreach (Mole mole in moles)
-        {
-            mole.mode = experimentMode;
-        }
-    }
-
         // Update is called once per frame
         void Update()
     {
@@ -48,8 +40,10 @@ public class GameController : MonoBehaviour
             // Reset timer
             time = runDuration;
             // Reset moles
+            experimentMode = UIBoard.Instance.currentMode;
             foreach (Mole mole in moles)
             {
+                mole.mode = experimentMode;
                 mole.Hide();
             }
             // Start spawner

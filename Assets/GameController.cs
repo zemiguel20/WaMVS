@@ -7,6 +7,8 @@ using UnityEngine.InputSystem.XR;
 
 public class GameController : MonoBehaviour
 {
+    [Range(0, 3)]
+    [SerializeField] private int experimentMode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
     [SerializeField] private int runDuration;
     [SerializeField] private float moleAnimationDuration;
     [SerializeField] private float moleStayDuration;
@@ -25,8 +27,8 @@ public class GameController : MonoBehaviour
         startGame.Enable();
     }
 
-    // Update is called once per frame
-    void Update()
+        // Update is called once per frame
+        void Update()
     {
         // T FOR TEST ACTIVATION
         if (time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)
@@ -46,8 +48,10 @@ public class GameController : MonoBehaviour
             // Reset timer
             time = runDuration;
             // Reset moles
+            experimentMode = UIBoard.Instance.currentMode;
             foreach (Mole mole in moles)
             {
+                mole.mode = experimentMode;
                 mole.Hide();
             }
             // Set mole animation speed

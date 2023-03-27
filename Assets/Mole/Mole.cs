@@ -18,6 +18,8 @@ public class Mole : MonoBehaviour
     private VibrationSource appearVib;
     private AudioSource hitSFX;
 
+    [HideInInspector]public int mode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
+
     private void Awake()
     {
         moleModel = transform.Find("MoleModel");
@@ -34,7 +36,9 @@ public class Mole : MonoBehaviour
 
     private void OnMoleHit()
     {
-        hitSFX.Play();
+        if (mode == 3 || mode == 1)
+            hitSFX.Play();
+
         Hide();
         moleHit.Invoke();
     }

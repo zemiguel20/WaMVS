@@ -2,103 +2,77 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 
 public class GameController : MonoBehaviour
 {
-    [Range(0, 3)]
-    [SerializeField] private int experimentMode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
-    [SerializeField] private int runDuration;
-    [SerializeField] private float moleAnimationDuration;
-    [SerializeField] private float moleStayDuration;
-    [SerializeField] private float moleSpawnCooldown;
+    [SerializeField] private float moleAnimationSpeed;
+    [SerializeField] private float moleCooldown;
     [SerializeField] private bool soundActive;
     [SerializeField] private bool vibrationActive;
     [SerializeField] private List<Mole> moles;
 
-    public InputAction startGame;
-
-    public int score { get; private set; }
-    public float time { get; private set; } // Run timer
+    private List<Mole> sequence;
+    private List<float> times;
+    public int moleCount { get; private set; }
 
     private void Start()
     {
-        startGame.Enable();
-    }
-
-        // Update is called once per frame
-        void Update()
-    {
-        // T FOR TEST ACTIVATION
-        if (time <= 0.0f && Keyboard.current.tKey.wasPressedThisFrame)
+        // Connect events
+        foreach (Mole mole in moles)
         {
-            foreach (Mole mole in moles)
-            {
-                mole.Show(3.0f);
-            }
-        }
-
-        // Run start/restart
-        
-        if (time <= 0.0f && startGame.WasPerformedThisFrame())
-        {
-            // Reset score
-            score = 0;
-            // Reset timer
-            time = runDuration;
-            // Reset moles
-            experimentMode = UIBoard.Instance.currentMode;
-            foreach (Mole mole in moles)
-            {
-                mole.mode = experimentMode;
-                mole.Hide();
-            }
-            // Set mole animation speed
-            Mole.s_animationSpeed = 1.0f / moleAnimationDuration;
-            // Set Sound and Vibration flags
-            Mole.s_soundActive = soundActive;
-            Mole.s_vibrationActive = vibrationActive;
-            // Start spawner
-            StartCoroutine(MoleSpawner());
-        }
-
-        if (time > 0.0f)
-        {
-            // Decrease timer
-            time -= Time.deltaTime;
+            mole.moleHit += OnMoleHit;
         }
     }
 
-    private IEnumerator MoleSpawner()
+    private void OnGUI()
     {
-        // Spawn while there is time
-        while (time > 0.0f)
+        if (GUILayout.Button("Start"))
         {
-            // Get inactive moles
-            IEnumerable<Mole> inactiveMoles = moles.Where(mole => mole.active == false);
-            if (inactiveMoles.Count() > 0)
-            {
-                // Choose random inactive mole
-                int moleIndex = Random.Range(0, inactiveMoles.Count());
-                // Activate mole
-                inactiveMoles.ElementAt(moleIndex).Show(moleStayDuration);
-            }
-
-            // Cooldown
-            yield return new WaitForSeconds(moleSpawnCooldown);
+            StartRun();
         }
-        Debug.Log("Finished Spawner");
+    }
 
-        // Hide all moles
+    public void StartRun()
+    {
+        // Reset times list
+        times = new List<float>();
+
+        // Reset moles
         foreach (Mole mole in moles)
         {
             mole.Hide();
         }
+
+        // Set mole animation speed
+        Mole.s_animationSpeed = moleAnimationSpeed;
+        // Set Sound and Vibration flags
+        Mole.s_soundActive = soundActive;
+        Mole.s_vibrationActive = vibrationActive;
+
+        // Create sequence
+        sequence = new List<Mole>();
+        sequence.AddRange(moles.OrderBy(mole => Random.value));
+        sequence.AddRange(moles.OrderBy(mole => Random.value));
+
+        moleCount = 0;
+
+        // Show first mole
+        sequence[moleCount].Show();
     }
 
-    public void OnMoleHit()
+    public void OnMoleHit(int time)
     {
-        score += 100;
+        times.Add(time);
+        StartCoroutine(SpawnNextCoroutine());
+    }
+
+    public IEnumerator SpawnNextCoroutine()
+    {
+        moleCount++;
+        if (moleCount < sequence.Count)
+        {
+            yield return new WaitForSeconds(moleCooldown);
+            sequence[moleCount].Show();
+        }
     }
 }

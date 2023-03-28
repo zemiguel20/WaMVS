@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,9 +9,7 @@ public class Mole : MonoBehaviour
     public static bool s_soundActive = false;
     public static bool s_vibrationActive = false;
 
-    public UnityEvent moleHit;
-
-    public bool active { get; private set; }
+    public Action<int> moleHit;
 
     private Transform moleModel;
     private Collider moleCollider;
@@ -18,7 +17,7 @@ public class Mole : MonoBehaviour
     private VibrationSource appearVib;
     private AudioSource hitSFX;
 
-    [HideInInspector]public int mode = 3; // 0: only visual, 1: with sound, 2: with vibration, 3: both
+    private DateTime startTimestamp; // To measure time
 
     private void Awake()
     {
@@ -29,42 +28,37 @@ public class Mole : MonoBehaviour
         hitSFX = transform.Find("HitFX").GetComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        OnMoleHit();
-    }
-
-    private void OnMoleHit()
-    {
-        if (mode == 3 || mode == 1)
-            hitSFX.Play();
-
-        Hide();
-        moleHit.Invoke();
-    }
-
-    // Activate mole for X time (in seconds)
-    public void Show(float time)
+    public void Show()
     {
         StopAllCoroutines();
-        StartCoroutine(ShowSequence(time));
+        StartCoroutine(ShowSequence());
     }
 
-    private IEnumerator ShowSequence(float time)
+    private IEnumerator ShowSequence()
     {
-        active = true;
         moleCollider.enabled = true;
-        if(s_soundActive)
+        if (s_soundActive)
         {
             appearSFX.Play();
         }
-        if(s_vibrationActive)
+        if (s_vibrationActive)
         {
             appearVib.Play();
         }
+        // Start stopwatch
+        startTimestamp = DateTime.Now;
+        // Animation
         yield return TweenPosition(new Vector3(0, 0.5f, 0));
-        yield return new WaitForSeconds(time);
+    }
+
+    // On mole hit
+    private void OnTriggerEnter(Collider other)
+    {
+        DateTime endTimestamp = DateTime.Now;
+        TimeSpan elapsedTime = endTimestamp.Subtract(startTimestamp);
+        hitSFX.Play();
         Hide();
+        moleHit.Invoke((int)elapsedTime.TotalMilliseconds);
     }
 
     public void Hide()
@@ -75,12 +69,9 @@ public class Mole : MonoBehaviour
 
     private IEnumerator HideSequence()
     {
-        // Disable trigger so player cant hit twice
         moleCollider.enabled = false;
-        // Play hide animation
+        // Animation
         yield return TweenPosition(Vector3.zero);
-        // Set inactive once animation finished
-        active = false;
     }
 
     // Tween to target position
@@ -97,7 +88,4 @@ public class Mole : MonoBehaviour
             yield return null;
         }
     }
-
-
-
 }
